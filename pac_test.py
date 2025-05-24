@@ -19,7 +19,7 @@ class PacWindow(arcade.Window):
         self.reset_ball()
         self.sprite_list.append(self.ball)
 
-        self.score =0
+        self.score = 0
 
     def reset_ball(self):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
