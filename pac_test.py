@@ -7,17 +7,15 @@ MOVEMENT_SPEED = 10
 class PacWindow(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Collision Sprite Test")
-        arcade.set_background_color(arcade.color.BLACK)
-
-    def setup(self):
-        self.pacman = arcade.Sprite("Pacman OG.png", scale = 0.5)
-        self.pacman.center_x = 100
-        self.pacman.center_y = 300
+        self.sprite_list = arcade.SpriteList()
+        self.pacman = arcade.Sprite("Pacman_OG-removebg-preview.png", scale = 0.5)
+        self.pacman.center_x = SCREEN_WIDTH // 2
+        self.pacman.center_y = SCREEN_HEIGHT // 2
+        self.sprite_list.append(self.pacman)
 
     def on_draw(self):
         self.clear()
-        if self.pacman:
-            self.pacman.draw()
+        self.sprite_list.draw()
 
     def on_key_press(self, key, modifiers):
         if self.pacman:
@@ -32,7 +30,6 @@ class PacWindow(arcade.Window):
 
 def main():
     window = PacWindow()
-    window.setup()
     arcade.run()
 
 
