@@ -1,4 +1,5 @@
 import arcade
+import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -12,6 +13,11 @@ class PacWindow(arcade.Window):
         self.pacman.center_x = SCREEN_WIDTH // 2
         self.pacman.center_y = SCREEN_HEIGHT // 2
         self.sprite_list.append(self.pacman)
+
+        self.ball = arcade.Sprite("ball.png", scale = 0.15)
+        self.ball.center_x = random.randint(0, SCREEN_WIDTH)
+        self.ball.center_y = random.randint(0, SCREEN_HEIGHT)
+        self.sprite_list.append(self.ball)
 
     def on_draw(self):
         self.clear()
