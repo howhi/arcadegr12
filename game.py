@@ -3,7 +3,7 @@ import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-MOVEMENT_SPEED = 10
+MOVEMENT_SPEED = 20
 
 class PacWindow(arcade.Window):
     def __init__(self):
@@ -25,14 +25,18 @@ class PacWindow(arcade.Window):
         self.sprite_list.append(self.pacman)
 
         self.ball = arcade.Sprite("ball.png", scale = 0.15)
-        self.reset_ball()
         self.sprite_list.append(self.ball)
+        self.reset_ball()
 
         self.score = 0
 
     def reset_ball(self):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
         self.ball.center_y = random.randint(0, SCREEN_HEIGHT)
+
+        speed = 2
+        self.ball.change_x = speed * random.choice([-1, 1])
+        self.ball.change_y = speed * random.choice([-1, 1])
 
     def on_draw(self):
         self.clear()
@@ -51,6 +55,15 @@ class PacWindow(arcade.Window):
                 self.pacman.center_x += MOVEMENT_SPEED
     
     def on_update(self, delta_time):
+        self.ball.center_x += self.ball.change_x
+        self.ball.center_y += self.ball.change_y
+
+        if self.ball.left < 0 or self.ball.right > SCREEN_WIDTH:
+            self.ball.change_x *= -1
+        
+        if self.ball.bottom < 0 or self.ball.top > SCREEN_HEIGHT:
+            self.ball.change_y *= -1
+
         self.animation_timer += delta_time
         if self.animation_timer > 0.2:
             self.animation_timer = 0
