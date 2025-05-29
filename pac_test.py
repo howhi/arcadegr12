@@ -1,10 +1,12 @@
 import arcade
 import random
 
+#Screen size and movement speed constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 MOVEMENT_SPEED = 10
 
+#Main Window Class
 class PacWindow(arcade.Window):
     #Initialize window
     def __init__(self):
@@ -53,7 +55,7 @@ class PacWindow(arcade.Window):
         arcade.draw_text(f"{self.score}", 10, SCREEN_HEIGHT - 30, arcade.color.WHITE, 20)
 
     def on_key_press(self, key, modifiers):
-        #Method to move pacman sprite
+        #Method to move pacman sprite using arrow keys
         if self.pacman:
             if key == arcade.key.UP:
                 self.pacman.center_y += MOVEMENT_SPEED
@@ -75,7 +77,7 @@ class PacWindow(arcade.Window):
 
 
 def main():
-    #Create a game window from the PacWindow class
+    #Launch a game window from the PacWindow class
     window = PacWindow()
 
     #Start Arcade game loop

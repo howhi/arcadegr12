@@ -8,16 +8,18 @@ MOVEMENT_SPEED = 10
 
 #Main Window class
 class BoxWindow(arcade.Window):
+    #Initialize the window with size and title
     def __init__(self):
-        #Initialize the window with size and title
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Move the Box")
         #Set initial box position at centre of screen
         self.box_x = SCREEN_WIDTH // 2
         self.box_y = SCREEN_HEIGHT // 2
 
+    #Draw everything
     def on_draw(self):
-        #Clear screen and draw box
+        #Clear screen
         self.clear()
+        #Draw box using size and color values using draw function from arcade package
         arcade.draw_lrbt_rectangle_filled(
             left = self.box_x - BOX_SIZE / 2,
             right = self.box_x + BOX_SIZE / 2,
@@ -27,7 +29,7 @@ class BoxWindow(arcade.Window):
         )
 
     def on_key_press(self, key, modifiers):
-        #Move box according to arrow keys pressed
+        #Method to move pacman sprite using arrow keys
         if key == arcade.key.UP:
             self.box_y += MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
@@ -39,7 +41,9 @@ class BoxWindow(arcade.Window):
 
 #Launch window and run main loop
 def main():
+    #Launch a game window from the PacWindow class
     window = BoxWindow()
+    #Start Arcade game loop
     arcade.run()
 
 #Run program
