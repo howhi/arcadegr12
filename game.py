@@ -5,6 +5,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 MOVEMENT_SPEED = 5
 
+
 class PacWindow(arcade.Window):
     def __init__(self):
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Collision Sprite Test")
@@ -19,9 +20,8 @@ class PacWindow(arcade.Window):
         self.pacman.textures.append(arcade.load_texture("Pac_Closed-removebg-preview.png"))
         self.pacman.textures.append(arcade.load_texture("Pacman_Open_OG-removebg-preview.png"))
         
-        self.current_texture_index = 0
+        self.pac_current_texture_index = 0
         self.animation_timer = 0
-
         self.sprite_list.append(self.pacman)
 
         self.ball = arcade.Sprite("ball.png", scale = 0.15)
@@ -29,10 +29,25 @@ class PacWindow(arcade.Window):
         self.sprite_list.append(self.ball)
         self.reset_ball()
 
+        self.ghost = arcade.Sprite("Red_Ghost-removebg-preview (1).png", scale = 0.5)
+        self.ghost.center_x = SCREEN_WIDTH // 2
+        self.ghost.center_y = SCREEN_HEIGHT // 2
+
+        #Load both textures for animation
+        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (2).png"))
+        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (3).png"))
+        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (4).png"))
+        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (1).png"))
+        
+        self.ghost_current_texture_index = 0
+        self.sprite_list.append(self.ghost)
+
         self.score = 0
 
         #Track keys pressed
         self.keys_held = set()
+
+    
 
     def reset_ball(self):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
@@ -66,8 +81,10 @@ class PacWindow(arcade.Window):
         self.animation_timer += delta_time
         if self.animation_timer > 0.2:
             self.animation_timer = 0
-            self.current_texture_index = (self.current_texture_index + 1) % 2
-            self.pacman.texture = self.pacman.textures[self.current_texture_index]
+            self.pac_current_texture_index = (self.pac_current_texture_index + 1) % 2
+            self.pacman.texture = self.pacman.textures[self.pac_current_texture_index]
+            self.ghost_current_texture_index = (self.ghost_current_texture_index + 1) % 4
+            self.ghost.texture = self.ghost.textures[self.ghost_current_texture_index]
         
         if self.pacman:
             if arcade.key.UP in self.keys_held:
