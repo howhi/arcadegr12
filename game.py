@@ -47,12 +47,24 @@ class PacWindow(arcade.Window):
         if self.pacman:
             if key == arcade.key.UP:
                 self.pacman.center_y += MOVEMENT_SPEED
+                #Check top boundary
+                if self.pacman.top > SCREEN_HEIGHT:
+                    self.pacman.top = SCREEN_HEIGHT
             elif key == arcade.key.DOWN:
                 self.pacman.center_y -= MOVEMENT_SPEED
+                #Check bottom boundary
+                if self.pacman.bottom < 0:
+                    self.pacman.bottom = 0
             elif key == arcade.key.LEFT:
                 self.pacman.center_x -= MOVEMENT_SPEED
+                #Check left boundary
+                if self.pacman.left < 0:
+                    self.pacman.left = 0
             elif key == arcade.key.RIGHT:
                 self.pacman.center_x += MOVEMENT_SPEED
+                #Check right boundary
+                if self.pacman.right > SCREEN_WIDTH:
+                    self.pacman.right = SCREEN_WIDTH
     
     def on_update(self, delta_time):
         self.ball.center_x += self.ball.change_x
