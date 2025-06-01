@@ -8,7 +8,7 @@ MOVEMENT_SPEED = 5
 
 class PacWindow(arcade.Window):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Collision Sprite Test")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Connor Ho's Pacman")
         self.sprite_list = arcade.SpriteList()
 
         #Initialize Pacman sprite image
@@ -30,8 +30,6 @@ class PacWindow(arcade.Window):
         self.reset_ball()
 
         self.ghost = arcade.Sprite("Red_Ghost-removebg-preview (1).png", scale = 0.5)
-        self.ghost.center_x = SCREEN_WIDTH // 2
-        self.ghost.center_y = SCREEN_HEIGHT // 2
 
         #Load both textures for animation
         self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (2).png"))
