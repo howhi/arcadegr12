@@ -75,17 +75,17 @@ class PacWindow(arcade.Window):
                 #Check top boundary
                 if self.pacman.top > SCREEN_HEIGHT:
                     self.pacman.top = SCREEN_HEIGHT
-            elif arcade.key.DOWN in self.keys_held:
+            if arcade.key.DOWN in self.keys_held:
                 self.pacman.center_y -= MOVEMENT_SPEED
                 #Check bottom boundary
                 if self.pacman.bottom < 0:
                     self.pacman.bottom = 0
-            elif arcade.key.LEFT in self.keys_held:
+            if arcade.key.LEFT in self.keys_held:
                 self.pacman.center_x -= MOVEMENT_SPEED
                 #Check left boundary
                 if self.pacman.left < 0:
                     self.pacman.left = 0
-            elif arcade.key.RIGHT in self.keys_held:
+            if arcade.key.RIGHT in self.keys_held:
                 self.pacman.center_x += MOVEMENT_SPEED
                 #Check right boundary
                 if self.pacman.right > SCREEN_WIDTH:
