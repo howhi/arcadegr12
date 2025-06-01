@@ -3,7 +3,7 @@ import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-MOVEMENT_SPEED = 20
+MOVEMENT_SPEED = 5
 
 class PacWindow(arcade.Window):
     def __init__(self):
@@ -30,6 +30,9 @@ class PacWindow(arcade.Window):
 
         self.score = 0
 
+        #Track keys pressed
+        self.keys_held = set()
+
     def reset_ball(self):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
         self.ball.center_y = random.randint(0, SCREEN_HEIGHT)
@@ -44,27 +47,11 @@ class PacWindow(arcade.Window):
         arcade.draw_text(f"{self.score}", 10, SCREEN_HEIGHT - 30, arcade.color.WHITE, 20)
 
     def on_key_press(self, key, modifiers):
-        if self.pacman:
-            if key == arcade.key.UP:
-                self.pacman.center_y += MOVEMENT_SPEED
-                #Check top boundary
-                if self.pacman.top > SCREEN_HEIGHT:
-                    self.pacman.top = SCREEN_HEIGHT
-            elif key == arcade.key.DOWN:
-                self.pacman.center_y -= MOVEMENT_SPEED
-                #Check bottom boundary
-                if self.pacman.bottom < 0:
-                    self.pacman.bottom = 0
-            elif key == arcade.key.LEFT:
-                self.pacman.center_x -= MOVEMENT_SPEED
-                #Check left boundary
-                if self.pacman.left < 0:
-                    self.pacman.left = 0
-            elif key == arcade.key.RIGHT:
-                self.pacman.center_x += MOVEMENT_SPEED
-                #Check right boundary
-                if self.pacman.right > SCREEN_WIDTH:
-                    self.pacman.right = SCREEN_WIDTH
+        self.keys_held.add(key)
+
+    def on_key_release(self, key, modifiers):
+        if key in self.keys_held:
+            self.keys_held.remove(key)
     
     def on_update(self, delta_time):
         self.ball.center_x += self.ball.change_x
@@ -81,6 +68,28 @@ class PacWindow(arcade.Window):
             self.animation_timer = 0
             self.current_texture_index = (self.current_texture_index + 1) % 2
             self.pacman.texture = self.pacman.textures[self.current_texture_index]
+        
+        if self.pacman:
+            if arcade.key.UP in self.keys_held:
+                self.pacman.center_y += MOVEMENT_SPEED
+                #Check top boundary
+                if self.pacman.top > SCREEN_HEIGHT:
+                    self.pacman.top = SCREEN_HEIGHT
+            elif arcade.key.DOWN in self.keys_held:
+                self.pacman.center_y -= MOVEMENT_SPEED
+                #Check bottom boundary
+                if self.pacman.bottom < 0:
+                    self.pacman.bottom = 0
+            elif arcade.key.LEFT in self.keys_held:
+                self.pacman.center_x -= MOVEMENT_SPEED
+                #Check left boundary
+                if self.pacman.left < 0:
+                    self.pacman.left = 0
+            elif arcade.key.RIGHT in self.keys_held:
+                self.pacman.center_x += MOVEMENT_SPEED
+                #Check right boundary
+                if self.pacman.right > SCREEN_WIDTH:
+                    self.pacman.right = SCREEN_WIDTH
 
         if arcade.check_for_collision(self.pacman, self.ball):
             self.score += 1
