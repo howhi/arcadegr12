@@ -25,6 +25,7 @@ class PacWindow(arcade.Window):
         self.sprite_list.append(self.pacman)
 
         self.ball = arcade.Sprite("ball.png", scale = 0.15)
+        self.ball_speed = 2
         self.sprite_list.append(self.ball)
         self.reset_ball()
 
@@ -37,9 +38,8 @@ class PacWindow(arcade.Window):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
         self.ball.center_y = random.randint(0, SCREEN_HEIGHT)
 
-        speed = 2
-        self.ball.change_x = speed * random.choice([-1, 1])
-        self.ball.change_y = speed * random.choice([-1, 1])
+        self.ball.change_x = self.ball_speed * random.choice([-1, 1])
+        self.ball.change_y = self.ball_speed * random.choice([-1, 1])
 
     def on_draw(self):
         self.clear()
@@ -93,6 +93,10 @@ class PacWindow(arcade.Window):
 
         if arcade.check_for_collision(self.pacman, self.ball):
             self.score += 1
+
+            if self.score % 5 == 0:
+                self.ball_speed += 1
+
             self.reset_ball()
 
 def main():
