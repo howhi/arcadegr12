@@ -129,6 +129,15 @@ class PacWindow(arcade.Window):
         if distance > 0:
             self.ghost.center_x += (dx / distance) * self.ghost_speed
             self.ghost.center_y += (dy / distance) * self.ghost_speed
+            
+            if self.ghost.top > SCREEN_HEIGHT:
+                self.ghost.top = SCREEN_HEIGHT
+            if self.ghost.bottom < 0:
+                self.ghost.bottom = 0
+            if self.ghost.left < 0:
+                self.ghost.left = 0
+            if self.ghost.right > SCREEN_WIDTH:
+                self.ghost.right = SCREEN_WIDTH
 
         if arcade.check_for_collision(self.pacman, self.ball):
             self.score += 1
@@ -146,7 +155,7 @@ class PacWindow(arcade.Window):
             self.ghost_speed += 0.2 * level_diff
             self.ghost_speed = max(1, min(self.ghost_speed, 4.8))
             self.last_level = new_level
-            
+
 def main():
     window = PacWindow()
     arcade.run()
