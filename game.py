@@ -41,13 +41,26 @@ class PacWindow(arcade.Window):
         
         self.ghost_current_texture_index = 0
         self.sprite_list.append(self.ghost)
+        self.spawn_ghost()
+        self.ghost_speed = 1
 
         self.score = 0
+        self.last_level = 0
 
         #Track keys pressed
         self.keys_held = set()
 
     
+    def spawn_ghost(self):
+        while True:
+            x = random.randint(0, SCREEN_WIDTH)
+            y = random.randint(0, SCREEN_HEIGHT)
+
+            self.ghost.center_x = x
+            self.ghost.center_y = y
+
+            if not arcade.check_for_collision(self.pacman, self.ghost):
+                break
 
     def reset_ball(self):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
@@ -108,14 +121,32 @@ class PacWindow(arcade.Window):
                 if self.pacman.right > SCREEN_WIDTH:
                     self.pacman.right = SCREEN_WIDTH
 
+        dx = self.pacman.center_x - self.ghost.center_x
+        dy = self.pacman.center_y - self.ghost.center_y
+
+        distance = (dx ** 2 + dy ** 2) ** 0.5
+
+        if distance > 0:
+            self.ghost.center_x += (dx / distance) * self.ghost_speed
+            self.ghost.center_y += (dy / distance) * self.ghost_speed
+
         if arcade.check_for_collision(self.pacman, self.ball):
             self.score += 1
-
-            if self.score % 5 == 0:
-                self.ball_speed += 1
-
             self.reset_ball()
 
+        if arcade.check_for_collision(self.pacman, self.ghost):
+            self.score -= 1
+            self.spawn_ghost()
+
+        new_level = self.score // 5
+        if new_level != self.last_level:
+            level_diff = new_level - self.last_level
+            self.ball_speed += level_diff
+            self.ball_speed = max(1, self.ball_speed)
+            self.ghost_speed += 0.2 * level_diff
+            self.ghost_speed = max(1, min(self.ghost_speed, 4.8))
+            self.last_level = new_level
+            
 def main():
     window = PacWindow()
     arcade.run()
