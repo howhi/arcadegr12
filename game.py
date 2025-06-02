@@ -41,38 +41,38 @@ class PacWindow(arcade.Window):
         self.sprite_list.append(self.ball)
         self.reset_ball()
 
-        #Initialize ghost sprite
-        self.ghost = arcade.Sprite("Red_Ghost-removebg-preview (1).png", scale = 0.5)
+        #Initialize ghost1 sprite
+        self.ghost1 = arcade.Sprite("Red_Ghost-removebg-preview (1).png", scale = 0.5)
 
-        #Load textures textures/images for ghost animation
-        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (2).png"))
-        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (3).png"))
-        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (4).png"))
-        self.ghost.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (1).png"))
+        #Load textures textures/images for ghost1 animation
+        self.ghost1.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (2).png"))
+        self.ghost1.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (3).png"))
+        self.ghost1.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (4).png"))
+        self.ghost1.textures.append(arcade.load_texture("Red_Ghost-removebg-preview (1).png"))
         
-        #Start ghost texture at first picture (index = 0)
-        self.ghost_current_texture_index = 0
+        #Start ghost1 texture at first picture (index = 0)
+        self.ghost1_current_texture_index = 0
 
-        #Add ghost to sprite list
-        self.sprite_list.append(self.ghost)
+        #Add ghost1 to sprite list
+        self.sprite_list.append(self.ghost1)
         
-        #Spawn ghost with a speed of 1
-        self.spawn_ghost()
-        self.ghost_speed = 1
+        #Spawn ghost1 with a speed of 1
+        self.spawn_ghost1()
+        self.ghost1_speed = 1
 
         #Add second ghost
         self.ghost2 = arcade.Sprite("Red_Ghost-removebg-preview (1).png", scale = 0.5)
 
         #Clone textures from first ghost
-        self.ghost2.textures = self.ghost.textures.copy()
+        self.ghost2.textures = self.ghost1.textures.copy()
         self.ghost2_current_texture_index = 0
         self.ghost2.texture = self.ghost2.textures[self.ghost2_current_texture_index]
 
-        #Do not add to sprite list yet, add only when active
+        #Do not add ghost2 to sprite list yet, add only when active
         self.ghost2_active = False
 
         #Set second ghost's speed same as first
-        self.ghost2_speed = self.ghost_speed
+        self.ghost2_speed = self.ghost1_speed
 
         #Initialize score and level to 0
         self.score = 0
@@ -82,20 +82,20 @@ class PacWindow(arcade.Window):
         self.keys_held = set()
 
     
-    def spawn_ghost(self):
-        #Place ghost randomly on screen but not at the same place as Pacman
+    def spawn_ghost1(self):
+        #Place ghost1 randomly on screen but not at the same place as Pacman
         while True:
             x = random.randint(0, SCREEN_WIDTH)
             y = random.randint(0, SCREEN_HEIGHT)
 
-            self.ghost.center_x = x
-            self.ghost.center_y = y
+            self.ghost1.center_x = x
+            self.ghost1.center_y = y
 
-            if not arcade.check_for_collision(self.pacman, self.ghost):
+            if not arcade.check_for_collision(self.pacman, self.ghost1):
                 break
 
     def spawn_ghost2(self):
-        #Place ghost2 randomly on screen but not at the same place as Pacman or other ghost
+        #Place ghost2 randomly on screen but not at the same place as Pacman or ghost1
         while True:
             x = random.randint(0, SCREEN_WIDTH)
             y = random.randint(0, SCREEN_HEIGHT)
@@ -103,7 +103,7 @@ class PacWindow(arcade.Window):
             self.ghost2.center_x = x
             self.ghost2.center_y = y
 
-            if not arcade.check_for_collision(self.pacman, self.ghost2) and not arcade.check_for_collision(self.ghost, self.ghost2):
+            if not arcade.check_for_collision(self.pacman, self.ghost2) and not arcade.check_for_collision(self.ghost1, self.ghost2):
                 break
 
     def reset_ball(self):
@@ -150,8 +150,8 @@ class PacWindow(arcade.Window):
         if self.animation_timer > 0.2:
             self.pac_current_texture_index = (self.pac_current_texture_index + 1) % 2
             self.pacman.texture = self.pacman.textures[self.pac_current_texture_index]
-            self.ghost_current_texture_index = (self.ghost_current_texture_index + 1) % 4
-            self.ghost.texture = self.ghost.textures[self.ghost_current_texture_index]
+            self.ghost1_current_texture_index = (self.ghost1_current_texture_index + 1) % 4
+            self.ghost1.texture = self.ghost1.textures[self.ghost1_current_texture_index]
             
             #Only update animation of Ghost2 if active (appeared)
             if self.ghost2_active:
@@ -195,25 +195,25 @@ class PacWindow(arcade.Window):
                 if self.pacman.right > SCREEN_WIDTH:
                     self.pacman.right = SCREEN_WIDTH
         
-        #Move ghost toward Pacman constantly (i.e. "chasing" it)
-        dx = self.pacman.center_x - self.ghost.center_x
-        dy = self.pacman.center_y - self.ghost.center_y
+        #Move ghost1 toward Pacman constantly (i.e. "chasing" it)
+        dx = self.pacman.center_x - self.ghost1.center_x
+        dy = self.pacman.center_y - self.ghost1.center_y
         distance = (dx ** 2 + dy ** 2) ** 0.5
 
         #Move ghost1 toward Pacman by normalizing direction vector (dx, dy) and scaling it by ghost speed
         if distance > 0:
-            self.ghost.center_x += (dx / distance) * self.ghost_speed
-            self.ghost.center_y += (dy / distance) * self.ghost_speed
+            self.ghost1.center_x += (dx / distance) * self.ghost1_speed
+            self.ghost1.center_y += (dy / distance) * self.ghost1_speed
             
             #Keep ghost1 within screen boundaries
-            if self.ghost.top > SCREEN_HEIGHT:
-                self.ghost.top = SCREEN_HEIGHT
-            if self.ghost.bottom < 0:
-                self.ghost.bottom = 0
-            if self.ghost.left < 0:
-                self.ghost.left = 0
-            if self.ghost.right > SCREEN_WIDTH:
-                self.ghost.right = SCREEN_WIDTH
+            if self.ghost1.top > SCREEN_HEIGHT:
+                self.ghost1.top = SCREEN_HEIGHT
+            if self.ghost1.bottom < 0:
+                self.ghost1.bottom = 0
+            if self.ghost1.left < 0:
+                self.ghost1.left = 0
+            if self.ghost1.right > SCREEN_WIDTH:
+                self.ghost1.right = SCREEN_WIDTH
 
         #If score turns from 14 to 15 (if score is equal to or greater than 15)
         #and if ghost2 is not already active, spawn ghost2 and set it as 'active'
@@ -251,23 +251,24 @@ class PacWindow(arcade.Window):
             self.reset_ball()
 
         #Ghost1 collision: decrement score and respawn ghost
-        if arcade.check_for_collision(self.pacman, self.ghost):
+        if arcade.check_for_collision(self.pacman, self.ghost1):
             self.score -= 1
-            self.spawn_ghost()
+            self.spawn_ghost1()
 
         #Ghost2 collision if active
         if self.ghost2_active and arcade.check_for_collision(self.pacman, self.ghost2):
             self.score -= 1
             self.spawn_ghost2()
 
-        #Level up: increase balla nd ghost speed
+        #Level up: increase ball and ghost speed
         new_level = self.score // 5
         if new_level != self.last_level:
             level_diff = new_level - self.last_level
             self.ball_speed += level_diff
             self.ball_speed = max(1, self.ball_speed)
-            self.ghost_speed += 0.2 * level_diff
-            self.ghost_speed = max(1, min(self.ghost_speed, 4.8))
+            self.ghost1_speed += 0.2 * level_diff
+            self.ghost1_speed = max(1, min(self.ghost1_speed, 4.8))
+            
             self.last_level = new_level
 
 #Start the game
