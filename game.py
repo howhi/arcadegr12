@@ -95,7 +95,7 @@ class PacWindow(arcade.Window):
                 break
 
     def spawn_ghost2(self):
-        #Place ghost2 randomly on screen but not at the same place as Pacman
+        #Place ghost2 randomly on screen but not at the same place as Pacman or other ghost
         while True:
             x = random.randint(0, SCREEN_WIDTH)
             y = random.randint(0, SCREEN_HEIGHT)
@@ -111,6 +111,8 @@ class PacWindow(arcade.Window):
         self.ball.center_x = random.randint(0, SCREEN_WIDTH)
         self.ball.center_y = random.randint(0, SCREEN_HEIGHT)
 
+        #Set ball's velocity to be a product of its speed (according to level)
+        #and according to a random direction
         self.ball.change_x = self.ball_speed * random.choice([-1, 1])
         self.ball.change_y = self.ball_speed * random.choice([-1, 1])
 
@@ -144,38 +146,52 @@ class PacWindow(arcade.Window):
         #Add time since last frame to animation timer
         self.animation_timer += delta_time
 
-        #Update animations every 0.2 seconds (change to next index)
+        #Update animations of Pacman and Ghost1 every 0.2 seconds (change to next index)
         if self.animation_timer > 0.2:
             self.pac_current_texture_index = (self.pac_current_texture_index + 1) % 2
             self.pacman.texture = self.pacman.textures[self.pac_current_texture_index]
             self.ghost_current_texture_index = (self.ghost_current_texture_index + 1) % 4
             self.ghost.texture = self.ghost.textures[self.ghost_current_texture_index]
             
+            #Only update animation of Ghost2 if active (appeared)
             if self.ghost2_active:
                 self.ghost2_current_texture_index = (self.ghost2_current_texture_index + 1) % 4
                 self.ghost2.texture = self.ghost2.textures[self.ghost2_current_texture_index]
             
+            #Reset animation timer
             self.animation_timer = 0
+
         #Move Pacman with key presses and ensure screen boundaries
         if self.pacman:
+
+            #'Up' arrow key pressed
             if arcade.key.UP in self.keys_held:
                 self.pacman.center_y += MOVEMENT_SPEED
-                #Check top boundary
+
+                #Disable pacman from going out the top of the screen
                 if self.pacman.top > SCREEN_HEIGHT:
                     self.pacman.top = SCREEN_HEIGHT
+            #'Down' arrow key pressed
+
             if arcade.key.DOWN in self.keys_held:
                 self.pacman.center_y -= MOVEMENT_SPEED
-                #Check bottom boundary
+                #Disable pacman from going out the top of the screen
                 if self.pacman.bottom < 0:
                     self.pacman.bottom = 0
+
+            #'Left' arrow key pressed            
             if arcade.key.LEFT in self.keys_held:
                 self.pacman.center_x -= MOVEMENT_SPEED
-                #Check left boundary
+
+                #Disable pacman from going out the top of the screen
                 if self.pacman.left < 0:
                     self.pacman.left = 0
+
+            #'Right" arrow key pressed
             if arcade.key.RIGHT in self.keys_held:
                 self.pacman.center_x += MOVEMENT_SPEED
-                #Check right boundary
+
+                #Disable pacman from going out the top of the screen
                 if self.pacman.right > SCREEN_WIDTH:
                     self.pacman.right = SCREEN_WIDTH
         
@@ -184,12 +200,12 @@ class PacWindow(arcade.Window):
         dy = self.pacman.center_y - self.ghost.center_y
         distance = (dx ** 2 + dy ** 2) ** 0.5
 
-        #Move ghost toward Pacman by normalizing direction vector (dx, dy) and scaling it by ghost speed
+        #Move ghost1 toward Pacman by normalizing direction vector (dx, dy) and scaling it by ghost speed
         if distance > 0:
             self.ghost.center_x += (dx / distance) * self.ghost_speed
             self.ghost.center_y += (dy / distance) * self.ghost_speed
             
-            #Keep ghost within screen boundaries
+            #Keep ghost1 within screen boundaries
             if self.ghost.top > SCREEN_HEIGHT:
                 self.ghost.top = SCREEN_HEIGHT
             if self.ghost.bottom < 0:
@@ -199,24 +215,30 @@ class PacWindow(arcade.Window):
             if self.ghost.right > SCREEN_WIDTH:
                 self.ghost.right = SCREEN_WIDTH
 
+        #If score turns from 14 to 15 (if score is equal to or greater than 15)
+        #and if ghost2 is not already active, spawn ghost2 and set it as 'active'
         if self.score >= 15 and not self.ghost2_active:
                 self.spawn_ghost2()
                 self.sprite_list.append(self.ghost2)
                 self.ghost2_active = True
 
+        #If score turns from 15 (if score becomes less than 15) and if ghost2 is
+        #already active, make ghost2 disappear and 'inactive'
         if self.score < 15 and self.ghost2_active:
             self.sprite_list.remove(self.ghost2)
             self.ghost2_active = False
 
-
+        #Move ghost2 toward Pacman constantly (i.e. "chasing" it)
         if self.ghost2_active:
             dx2 = self.pacman.center_x - self.ghost2.center_x
             dy2 = self.pacman.center_y - self.ghost2.center_y
             distance2 = (dx2 ** 2 + dy2 ** 2) ** 0.5
 
+            #Keep ghost2 within screen boundaries
             if distance2 > 0:
                 self.ghost2.center_x += (dx2 / distance2) * self.ghost2_speed
                 self.ghost2.center_y += (dy2 / distance2) * self.ghost2_speed
+                
                 #Boundaries for ghost2 are same as first ghost
                 self.ghost2.top = min(self.ghost2.top, SCREEN_HEIGHT)
                 self.ghost2.bottom = max(self.ghost2.bottom, 0)
