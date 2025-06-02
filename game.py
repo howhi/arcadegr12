@@ -77,6 +77,9 @@ class PacWindow(arcade.Window):
         #Initialize score and level to 0
         self.score = 0
         self.last_level = 0
+        
+        #Set ghost2 level to 0 (keep it separate because it spawns later)
+        self.ghost2_level = 0
 
         #Track keys pressed
         self.keys_held = set()
@@ -260,15 +263,33 @@ class PacWindow(arcade.Window):
             self.score -= 1
             self.spawn_ghost2()
 
-        #Level up: increase ball and ghost speed
+        #Set level equal to the integer value of quotient of current score and 5
         new_level = self.score // 5
+        
+        #If the new level is not equal to the last level
         if new_level != self.last_level:
+            #Calculate level difference
             level_diff = new_level - self.last_level
+
+            #Increment or Decrement ball speed (according to level) to a minimum of 1
             self.ball_speed += level_diff
             self.ball_speed = max(1, self.ball_speed)
+
+            #Increment or Decrement ghost1 speed (according to level) to a minimum of 1
+            #and a maximum of 4.8 (just below Pacman's movement speed)
             self.ghost1_speed += 0.2 * level_diff
             self.ghost1_speed = max(1, min(self.ghost1_speed, 4.8))
-            
+
+            #If ghost2 is active
+            if self.ghost2_active:
+                #Set ghost2_level to 3 less than the level of the game (given by ghost1)
+                ghost2_level = max(0, new_level - 3)
+
+                #Increment or Decrement ghost2 speed (according to ghost2 level)
+                #to a minimum of 1 and maximum of 4.8 (just below Pacman's movement speed)
+                self.ghost2_speed = 1 + 0.2 * ghost2_level
+                self.ghost2_speed = min(self.ghost2_speed, 4.8)
+                       
             self.last_level = new_level
 
 #Start the game
