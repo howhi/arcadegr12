@@ -29,7 +29,7 @@ class BoxWindow(arcade.Window):
         )
 
     def on_key_press(self, key, modifiers):
-        #Method to move pacman sprite using arrow keys
+        #Method to move box sprite using arrow keys
         if key == arcade.key.UP:
             self.box_y += MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
@@ -41,7 +41,7 @@ class BoxWindow(arcade.Window):
 
 #Launch window and run main loop
 def main():
-    #Launch a game window from the PacWindow class
+    #Launch a game window from the BoxWindow class
     window = BoxWindow()
     #Start Arcade game loop
     arcade.run()
